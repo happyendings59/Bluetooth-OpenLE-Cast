@@ -2,14 +2,14 @@
 
 By Kenneth William Mayle — https://5pm.io / https://kwm59.io  
 Contact: h@5pm.io
-Original draft dated 1-27-2026.
+Original draft dated 1-27-2026. Revised 11-9-2026 (corrected figures, see `docs/BROADCAST-PATHS.md`).
 Licensed under the GNU AGPL v3 or later (see `LICENSE` and `NOTICE`).
 
 ---
 
 ## 1. Overview & Use Cases
 
-**LE Audio Auracast Broadcasting** allows ONE Android device to broadcast high-quality audio to **unlimited receiver devices** (within range), all perfectly synchronized.
+**LE Audio Auracast Broadcasting** allows ONE Android device to broadcast high-quality audio to **unlimited receiver devices** (within range), all playing in sync.
 
 **Use cases:**
 
@@ -31,23 +31,23 @@ Licensed under the GNU AGPL v3 or later (see `LICENSE` and `NOTICE`).
 **TRANSMITTER (Your Phone):**
 
 - Android 13+ (minimum API 33, recommend API 35+)
-- Bluetooth 5.2+ chipset
-- Compatible phones (2026): Pixel 8/9+, Samsung Galaxy S23/24/25, Xiaomi devices
+- Bluetooth 5.2+ chipset with LE Audio broadcast source support
+- Phones with built-in Auracast audio sharing (2026): Pixel 8 and newer, Samsung Galaxy S23/S24/S25 and Z Fold5–7, recent Xiaomi and POCO models
+- Any other Android phone can broadcast through an external Auracast transmitter (see `docs/BROADCAST-PATHS.md`)
 - Sufficient RAM: 6GB+ recommended
 - Storage: 50MB+ free
 
 **RECEIVERS (Friends' Devices):**
 
 - Any device with Bluetooth LE Audio Auracast support:
-  - Pixel 8/9 phones
-  - Samsung Galaxy S23+ phones
-  - Sony WF-1000-5/WF-C700N earbuds
-  - Compatible hearing aids
-  - **Note:** Not every earbud has Auracast yet; must verify compatibility
+  - LE Audio earbuds and headphones that support Auracast receive
+  - Auracast-capable hearing aids and cochlear-implant processors
+  - Phones or USB-C receivers that can join a broadcast
+  - **Note:** LE Audio support does not always mean Auracast receive support. Check the maker's spec sheet before relying on a model.
 
 **Network:**
 
-- Bluetooth LE range: ~120–240 meters (open space)
+- Range: typically 10–30 m indoors from a phone; up to roughly 50–100 m line of sight with a stronger dedicated transmitter
 - Requires no Wi-Fi or cellular
 - 2.4 GHz unlicensed band (same as Classic Bluetooth)
 
@@ -57,17 +57,17 @@ Licensed under the GNU AGPL v3 or later (see `LICENSE` and `NOTICE`).
 
 **LC3 Codec (Low Complexity Communications Codec):**
 
-- Bitrate: 32–320 kbps (scales with network conditions)
+- Bitrate: fixed per stream; common Auracast configurations run about 32–96 kbps per channel (broadcast cannot adapt per listener)
 - Sample rates: 8, 16, 24, 32, 48 kHz
-- Latency: 5–20 ms (negligible for casual listening)
-- Power: ~70% lower than Classic Bluetooth
+- Codec delay: about 7.5–12.5 ms (LC3 frame plus look-ahead)
+- Power: lower than Classic Bluetooth A2DP at similar quality; actual savings vary by device
 
 **Broadcast Audio Format:**
 
 - **Mono or Stereo:** App can send either
 - **Frame duration:** 7.5 or 10 ms (standard)
 - **Number of streams:** 1 primary + optional secondary
-- **Passkey (optional):** Only invited receivers decode audio
+- **Broadcast Code (optional):** 4–16 byte code; only listeners who enter it can decrypt the audio
 
 ---
 
@@ -94,7 +94,7 @@ Earbud  Phone  Earbuds  Earbuds   (Any Auracast device)
 
 1. **Your phone:** Initiates broadcast → selects audio codec (LC3) → starts sending BIS (Broadcast Isochronous Stream)
 2. **Friends' devices:** Scan for nearby broadcasts → display QR code or "Connect" prompt → join broadcast (no pairing needed)
-3. **Sync:** All receivers stay synchronized to ~10µs precision
+3. **Sync:** Every receiver plays each audio frame after the same presentation delay, so all listeners hear it at the same moment
 
 ---
 
@@ -105,23 +105,24 @@ Earbud  Phone  Earbuds  Earbuds   (Any Auracast device)
 | Class | Purpose |
 |-------|---------|
 | `BluetoothAdapter` | Get profile proxy for LE Audio |
-| `BluetoothLeAudio` | Broadcast source control |
+| `BluetoothLeAudio` | LE Audio unicast profile (earbuds connected to the phone) |
+| `BluetoothLeBroadcast` | Broadcast source control — **system API**, privileged apps only |
 | `AudioManager` | Audio routing and device detection |
 | `MediaSession` | Media player integration (pause/play) |
-| `BluetoothLeAudio.Callback` | Connection state callbacks |
+| `AudioDeviceInfo.TYPE_BLE_BROADCAST` | Detects when the phone's own Auracast sharing is the active output |
 
 **Permissions Required:**
 
 ```xml
-<uses-permission android:name="android.permission.BLUETOOTH" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
 <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
 <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 ```
 
-**System Flags (Required to enable):**
+**System Flags (AOSP / custom ROMs only — not settable by apps on stock phones):**
 
 ```
 bluetooth.profile.bap.broadcast.source.enabled = true
@@ -137,6 +138,6 @@ bluetooth.profile.bap.broadcast.assist.enabled = true
 | **Advertising Interval** | 20–100 ms | Scan frequency |
 | **Broadcast Duration** | Infinite | Until stopped |
 | **QR Code Data** | Broadcast ID + passkey | Optional encryption |
-| **Max Receivers** | Unlimited (theoretical) | Limited by range/RF interference |
+| **Max Receivers** | No protocol limit | Listeners only receive; limited by range and interference |
 | **Codec Frame Size** | 60–120 bytes | LC3 compressed audio |
-| **Latency (E2E)** | 20–50 ms | User imperceptible |
+| **Latency (E2E)** | About 30–100 ms | Fine for music; may be noticeable when syncing with video on another screen |

@@ -12,7 +12,6 @@
 package io.kwm59.openlecast
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
@@ -22,21 +21,19 @@ import timber.log.Timber
 
 class PermissionHandler(private val activity: FragmentActivity) {
 
-    // Required permissions for LE Audio broadcast
+    // Runtime permissions for LE Audio on Android 12+ (minSdk is 33).
+    // BLUETOOTH / BLUETOOTH_ADMIN are legacy install-time permissions and
+    // MODIFY_AUDIO_SETTINGS is a normal permission, so they are declared in
+    // the manifest only and must NOT be requested here — checkSelfPermission
+    // reports them as denied on API 31+, which would block the callback forever.
     private val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         listOf(
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.BLUETOOTH_SCAN,
-            Manifest.permission.BLUETOOTH_ADVERTISE,
-            Manifest.permission.MODIFY_AUDIO_SETTINGS
+            Manifest.permission.BLUETOOTH_ADVERTISE
         )
     } else {
-        listOf(
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN
-        )
+        emptyList()
     }
 
     private var onPermissionsGranted: (() -> Unit)? = null

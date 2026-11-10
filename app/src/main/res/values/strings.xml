@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenLE-Cast</string>
+    <string name="pick_audio">Pick audio file</string>
+    <string name="no_track">No track selected</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="mode_label">How to broadcast</string>
+    <string name="mode_system">Phone\'s built-in audio sharing (Auracast)</string>
+    <string name="mode_external">External Auracast transmitter</string>
+    <string name="mode_privileged">Direct broadcast (system/rooted install only)</string>
+    <string name="stream_name_hint">Stream name</string>
+    <string name="default_stream_name">OpenLE-Cast</string>
+    <string name="use_passkey">Require passkey</string>
+    <string name="start">Start sharing</string>
+    <string name="stop">Stop</string>
+    <string name="about">About</string>
+    <string name="status_waiting">Waiting for Bluetooth permissions…</string>
+    <string name="status_bt_off">Bluetooth is off. Turn it on in quick settings.</string>
+    <string name="start_failed">Couldn\'t start. Direct broadcast needs a privileged install.</string>
+    <string name="hint_system">Turn on Audio sharing / Auracast in the Bluetooth screen that just opened, then come back and press Play. Friends join from the QR code your phone shows there.</string>
+    <string name="hint_external">Plug in or connect your Auracast transmitter, press Play, and have friends join its stream. The QR code shows the stream name and passkey.</string>
+    <string name="hint_privileged">Broadcasting directly. Friends pick this stream name in their Auracast menu and enter the passkey if set.</string>
+    <string name="about_text">OpenLE-Cast by Kenneth William Mayle\nhttps://5pm.io · https://kwm59.io\nh@5pm.io\n\nFree software under the GNU Affero General Public License v3.0 or later. Source: https://github.com/happyendings59/Bluetooth-OpenLE-Cast</string>
+</resources>
