@@ -42,4 +42,21 @@ Open the project folder in Android Studio (Ladybug or newer) and let it sync; it
 - Paths 1 and 2 use only public APIs. Path 3 uses reflection on a system API and needs real-device testing on a custom ROM.
 - The in-app QR code shows the stream name and passkey as text. It is not the official one-tap Auracast join code, which needs the phone's Bluetooth address that apps can't read.
 
+## Roadmap
+
+- **Build and test on real hardware** for paths 1 and 2, and fix whatever the first Android Studio build turns up.
+- **Direct USB dongle broadcasting (no root).** Android apps can talk to USB devices directly, so OpenLE-Cast could drive a low-cost Bluetooth USB dongle itself, the way Google's Bumble stack does on a computer. That would let any Android phone broadcast with the app fully controlling the stream name, passkey and official Auracast QR join code, with no root and no dedicated transmitter. Help wanted.
+- **Official Auracast QR codes** once the app controls the broadcast (path 3 or the USB dongle path).
+
+## Related projects
+
+OpenLE-Cast builds on ideas already explored elsewhere. Worth a look:
+
+- [Bumble Auracast app](https://google.github.io/bumble/apps_and_tools/auracast.html): Google's Python Bluetooth stack, broadcasts Auracast from a computer with a USB dongle
+- [Zephyr RTOS broadcast audio samples](https://kitemetric.com/blogs/mastering-auracast-broadcasting-multiple-audio-subgroups-with-zephyr): embedded broadcast source and sink
+- [BlueZ Auracast broadcasting](https://www.linuxtoday.com/blog/bluez-powered-auracast-broadcasting-on-genio-700/): Linux broadcasting work by Collabora
+- [sendspin-auracast](https://pypi.org/project/sendspin-auracast/): Python Auracast streamer
+- [Web-based broadcast assistant](https://dev.to/denladeside/a-web-based-broadcast-assistant-cld): browser tool for joining Auracast streams
+- Android's built-in audio sharing on recent Pixel, Samsung and Xiaomi phones, and USB transmitters such as the Avantree C82 Aura and Sennheiser BTD 700
+
 Contributions welcome under the same license.
