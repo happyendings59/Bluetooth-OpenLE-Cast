@@ -4,6 +4,8 @@
 
 Created by **Kenneth William Mayle** — https://5pm.io / https://kwm59.io
 
+Contact: h@5pm.io
+
 ## License
 
 Copyright (C) 2026 Kenneth William Mayle.

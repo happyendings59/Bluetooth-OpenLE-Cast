@@ -1,6 +1,7 @@
 # OpenLE-Cast — Bluetooth LE Audio Broadcast Specification
 
-By Kenneth William Mayle — https://5pm.io / https://kwm59.io
+By Kenneth William Mayle — https://5pm.io / https://kwm59.io  
+Contact: h@5pm.io
 Original draft dated 1-27-2026.
 Licensed under the GNU AGPL v3 or later (see `LICENSE` and `NOTICE`).
 
